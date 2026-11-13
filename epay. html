@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>E-PAY</title>
+<style>
+body{font-family:Arial;background:#0f0f0f;color:white;margin:0;padding:15px}
+h1{color:#00ff88;text-align:center}
+.box{background:#1e1e1e;padding:15px;border-radius:15px;margin:10px 0}
+input{width:95%;padding:12px;border-radius:10px;border:none;margin:5px 0}
+button{width:100%;padding:13px;background:#00ff88;border:none;border-radius:10px;font-weight:bold;font-size:16px;margin-top:5px}
+.btn2{background:#ffcc00}
+.history{background:#2a2a2a;padding:10px;border-radius:10px;margin-top:8px}
+</style>
+</head>
+<body>
+<h1>E-PAY 💸</h1>
+<p style="text-align:center">Vanakkam Abilash!</p>
+
+<div class="box">
+<p>En Balance</p>
+<h2 id="bal">₹ 0</h2>
+<button class="btn2" onclick="addMoney()">+ ADD MONEY</button>
+<button onclick="scan()">📷 SCAN & PAY</button>
+</div>
+
+<div class="box">
+<h3>Money Send Pannu</h3>
+<input id="name" placeholder="Yaarukku? Per / Phone Number">
+<input id="amt" type="number" placeholder="Evlo Amount? ₹">
+<button onclick="send()">SEND MONEY</button>
+<p id="msg"></p>
+</div>
+
+<div class="box">
+<h3>History</h3>
+<div id="list">Loading...</div>
+</div>
+
+<script>
+let balance = localStorage.getItem('epay_bal');
+if(balance == null){ balance = 10000; }
+balance = parseInt(balance);
+let hist = JSON.parse(localStorage.getItem('epay_hist') || '[]');
+
+function save(){
+  localStorage.setItem('epay_bal', balance);
+  localStorage.setItem('epay_hist', JSON.stringify(hist));
+  show();
+}
+function show(){
+  document.getElementById('bal').innerText = '₹ ' + balance;
+  let list = document.getElementById('list');
+  if(hist.length==0){ list.innerText='Innum transfer illa'; }
+  else{
+    list.innerHTML='';
+    hist.slice().reverse().forEach(h=>{
+      let d=document.createElement('div');
+      d.className='history'; d.innerText=h;
+      list.appendChild(d);
+    });
+  }
+}
+function send(){
+  let n = document.getElementById('name').value;
+  let a = parseInt(document.getElementById('amt').value);
+  if(!n || !a){ alert('Per-um Amount-um podu machi'); return; }
+  if(a > balance){ alert('Balance pothadhu machi!'); return; }
+  balance = balance - a;
+  hist.push('₹'+a+' -> '+n+' (Sent)');
+  document.getElementById('msg').innerText = '✅ ₹'+a+' '+n+' ku send aayiduchu!';
+  save();
+}
+function addMoney(){
+  let a = parseInt(prompt('Evlo Add panna?'));
+  if(!a) return;
+  balance = balance + a;
+  hist.push('₹'+a+' Added (Add Money)');
+  save();
+  alert('₹'+a+' Add aayiduchu!');
+}
+function scan(){
+  let n = prompt('QR Scan panniya! Yaarukku anuppa? Per podu');
+  if(!n) return;
+  document.getElementById('name').value = n;
+  alert('QR Scan Success! Ippo amount podu machi');
+}
+show();
+</script>
+</body>
+</html>
