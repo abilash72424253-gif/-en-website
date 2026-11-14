@@ -2,89 +2,41 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>E-PAY</title>
+<title>E-PAY PRO</title>
 <style>
-body{font-family:Arial;background:#0f0f0f;color:white;margin:0;padding:15px}
-h1{color:#00ff88;text-align:center}
+body{font-family:Arial;background:#0f0f0f;color:white;padding:15px;text-align:center}
+h1{color:#00ff88}
 .box{background:#1e1e1e;padding:15px;border-radius:15px;margin:10px 0}
 input{width:95%;padding:12px;border-radius:10px;border:none;margin:5px 0}
-button{width:100%;padding:13px;background:#00ff88;border:none;border-radius:10px;font-weight:bold;font-size:16px;margin-top:5px}
+button{width:100%;padding:13px;border:none;border-radius:10px;background:#00ff88;font-weight:bold;margin:5px 0}
 .btn2{background:#ffcc00}
-.history{background:#2a2a2a;padding:10px;border-radius:10px;margin-top:8px}
+.history{background:#2a2a2a;padding:10px;border-radius:10px;text-align:left}
 </style>
 </head>
 <body>
-<h1>E-PAY 💸</h1>
-<p style="text-align:center">Vanakkam Abilash!</p>
-
+<h1>E-PAY 💸 PRO</h1>
+<p>Vanakkam Abilash! 🔥</p>
 <div class="box">
 <p>En Balance</p>
 <h2 id="bal">₹ 0</h2>
 <button class="btn2" onclick="addMoney()">+ ADD MONEY</button>
 <button onclick="scan()">📷 SCAN & PAY</button>
 </div>
-
 <div class="box">
-<h3>Money Send Pannu</h3>
-<input id="name" placeholder="Yaarukku? Per / Phone Number">
-<input id="amt" type="number" placeholder="Evlo Amount? ₹">
-<button onclick="send()">SEND MONEY</button>
-<p id="msg"></p>
+<h3>Send Money</h3>
+<input id="name" placeholder="Yaarukku? Peru">
+<input id="amt" type="number" placeholder="Evlo? Amount">
+<button onclick="send()">SEND ➡️</button>
 </div>
-
-<div class="box">
-<h3>History</h3>
-<div id="list">Loading...</div>
-</div>
-
+<div class="history" id="hist"><b>History:</b><br>No transactions yet</div>
 <script>
-let balance = localStorage.getItem('epay_bal');
-if(balance == null){ balance = 10000; }
-balance = parseInt(balance);
-let hist = JSON.parse(localStorage.getItem('epay_hist') || '[]');
-
-function save(){
-  localStorage.setItem('epay_bal', balance);
-  localStorage.setItem('epay_hist', JSON.stringify(hist));
-  show();
-}
-function show(){
-  document.getElementById('bal').innerText = '₹ ' + balance;
-  let list = document.getElementById('list');
-  if(hist.length==0){ list.innerText='Innum transfer illa'; }
-  else{
-    list.innerHTML='';
-    hist.slice().reverse().forEach(h=>{
-      let d=document.createElement('div');
-      d.className='history'; d.innerText=h;
-      list.appendChild(d);
-    });
-  }
-}
-function send(){
-  let n = document.getElementById('name').value;
-  let a = parseInt(document.getElementById('amt').value);
-  if(!n || !a){ alert('Per-um Amount-um podu machi'); return; }
-  if(a > balance){ alert('Balance pothadhu machi!'); return; }
-  balance = balance - a;
-  hist.push('₹'+a+' -> '+n+' (Sent)');
-  document.getElementById('msg').innerText = '✅ ₹'+a+' '+n+' ku send aayiduchu!';
-  save();
-}
-function addMoney(){
-  let a = parseInt(prompt('Evlo Add panna?'));
-  if(!a) return;
-  balance = balance + a;
-  hist.push('₹'+a+' Added (Add Money)');
-  save();
-  alert('₹'+a+' Add aayiduchu!');
-}
-function scan(){
-  let n = prompt('QR Scan panniya! Yaarukku anuppa? Per podu');
-  if(!n) return;
-  document.getElementById('name').value = n;
-  alert('QR Scan Success! Ippo amount podu machi');
-}
+let bal=parseInt(localStorage.getItem('bal')||0);
+let hist=localStorage.getItem('hist')||'';
+function show(){document.getElementById('bal').innerText='₹ '+bal;document.getElementById('hist').innerHTML='<b>History:</b><br>'+(hist||'No transactions yet');}
+function addMoney(){let a=prompt('Evlo add panna?');if(a){bal+=parseInt(a);hist+='✅ +₹'+a+' Added<br>';save();}}
+function send(){let n=document.getElementById('name').value;let a=document.getElementById('amt').value;if(!n||!a)return alert('Peru & Amount podu machi!');if(a>bal)return alert('Balance illa machi!');bal-=a;hist+='➡️ ₹'+a+' to '+n+'<br>';save();alert('Sent ₹'+a+' to '+n); }
+function scan(){alert('Camera open aagum - QR scan panni pay pannalam!');}
+function save(){localStorage.setItem('bal',bal);localStorage.setItem('hist',hist);show();}
 show();
 </script>
 </body>
